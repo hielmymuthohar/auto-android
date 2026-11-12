@@ -144,6 +144,31 @@ class App : Application(), Application.ActivityLifecycleCallbacks {
         if (Build.VERSION.SDK_INT >= 26)
             com.andrerinas.openheadunit.connection.wifi.scan.WifiScanControl.initialize(this)
 
+        // Pre-configure optimal low-RAM defaults (Revive MyDroid Turnkey Edition)
+        val prefs = getSharedPreferences(Settings.PREFS_NAME, Context.MODE_PRIVATE)
+        if (!prefs.contains("revive_defaults_applied")) {
+            prefs.edit()
+                .putBoolean("revive_defaults_applied", true)
+                .putInt("resolutionId", Settings.Resolution._1280x720.id) // 720p
+                .putInt("fps-limit", 30) // 30 FPS
+                .putString("video-codec", "H.264")
+                .putBoolean("narrow-band-profile-cap", true)
+                .putInt("wifi-connection-mode", com.andrerinas.openheadunit.connection.wifi.WifiLauncherMode.NATIVE.id)
+                .putBoolean("enable-audio-sink", false) // Sound routes to car Bluetooth / phone
+                .putBoolean("has-accepted-disclaimer", true)
+                .putBoolean("has-completed-setup-wizard", true)
+                .putInt("onboarding-version", com.andrerinas.openheadunit.main.OnboardingActivity.CURRENT_ONBOARDING_VERSION)
+                .putBoolean("rename_notice_shown_v2", true)
+                .putBoolean("aa174_notice_shown", true)
+                .putBoolean("auto-connect-last-session", true)
+                .putBoolean("auto-connect-single-usb", true)
+                .putBoolean("auto-start-on-usb", true)
+                .putBoolean("usb-connect-on-plug-in", true)
+                .putBoolean("enable-car-launcher", true)
+                .apply()
+            com.andrerinas.openheadunit.utils.CarLauncherManager.setLauncherEnabled(this, true)
+        }
+
         val settings = Settings(this) // Create a Settings instance
         AppLog.init(settings, this) // Initialize AppLog with settings for conditional logging
 

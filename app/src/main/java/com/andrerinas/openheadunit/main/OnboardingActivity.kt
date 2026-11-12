@@ -159,6 +159,12 @@ class OnboardingActivity : BaseActivity() {
 
         setContentView(R.layout.activity_onboarding)
 
+        if (settings.hasCompletedSetupWizard && !intent.getBooleanExtra("extra_force_onboarding", false)) {
+            AppLog.i("OnboardingActivity: setup wizard already completed or bypassed, finishing immediately")
+            finish()
+            return
+        }
+
         step = savedInstanceState?.getInt(KEY_STEP, 0) ?: 0
         launcherRequestPending = savedInstanceState?.getBoolean(KEY_LAUNCHER_PENDING, false) ?: false
 
